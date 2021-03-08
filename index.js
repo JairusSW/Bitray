@@ -329,39 +329,31 @@ function utf8Decode (string) {
     if (codePoint > 0xD7FF && codePoint < 0xE000) {
       if (!leadSurrogate) {
         if (codePoint > 0xDBFF) {
-          if ((units -= 3) > -1) {
-            bytes.push(0xEF)
-            bytes.push(0xBF)
-            bytes.push(0xBD)
-          }
+          bytes.push(0xEF)
+          bytes.push(0xBF)
+          bytes.push(0xBD)
           continue
         } else if (i + 1 === length) {
-          if ((units -= 3) > -1) {
-            bytes.push(0xEF)
-            bytes.push(0xBF)
-            bytes.push(0xBD)
-          }
+          bytes.push(0xEF)
+          bytes.push(0xBF)
+          bytes.push(0xBD)
           continue
         }
         leadSurrogate = codePoint
         continue
       }
       if (codePoint < 0xDC00) {
-        if ((units -= 3) > -1) {
-          bytes.push(0xEF)
-          bytes.push(0xBF)
-          bytes.push(0xBD)
-        }
+        bytes.push(0xEF)
+        bytes.push(0xBF)
+        bytes.push(0xBD)
         leadSurrogate = codePoint
         continue
       }
       codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000
     } else if (leadSurrogate) {
-      if ((units -= 3) > -1) {
-        bytes.push(0xEF)
-        bytes.push(0xBF)
-        bytes.push(0xBD)
-      }
+      bytes.push(0xEF)
+      bytes.push(0xBF)
+      bytes.push(0xBD)
     }
     leadSurrogate = null
     if (codePoint < 0x80) {
