@@ -1,0 +1,14 @@
+{
+  "name": "bitray",
+  "version": "1.0.0",
+  "description": "Bitray - Small Utility For Handling Binary Data",
+  "main": "index.js",
+  "keywords": [
+    "Binary",
+    "Buffer",
+    "Bitray",
+    "Data"
+  ],
+  "author": "JairusSW",
+  "license": "MIT"
+}
