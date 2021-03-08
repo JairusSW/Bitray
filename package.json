@@ -1,6 +1,6 @@
 {
   "name": "bitray",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "Bitray - Small Utility For Handling Binary Data",
   "main": "index.js",
   "keywords": [
