@@ -48,3 +48,11 @@ Creates A New Bitray Instance. Built On Top Of Uint8Array.
 
 ### .toFormat(encoding) -->> String
 Convert Bitray Into A String Encoding.
+
+## Performance
+
+**Encode Performance**
+![Encode](https://media.discordapp.net/attachments/809586549418885161/819347128059953192/encode.png)
+
+**Decode Performance**
+![Decode](https://media.discordapp.net/attachments/809586549418885161/819349462387261460/decode.png)

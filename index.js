@@ -1,3 +1,17 @@
+const hexSliceLookupTable = (() => {
+  const alphabet = '0123456789abcdef'
+  const table = new Array(256)
+  for (let i = 0; i < 16; ++i) {
+    const i16 = i * 16
+    for (let j = 0; j < 16; ++j) {
+      table[i16 + j] = alphabet[i] + alphabet[j]
+    }
+  }
+  return table
+})()
+
+const Base64 = require('base64-js')
+
 class Bitray extends Uint8Array {
 
   constructor(data, encoding) {
@@ -28,9 +42,7 @@ class Bitray extends Uint8Array {
 
     } else if (encoding === 'base64') {
 
-      binary = toByteArray(data)
-
-      console.log('toByteArray', toByteArray(data))
+      binary = Base64.toByteArray(data)
 
     } else {
 
@@ -149,15 +161,15 @@ class Bitray extends Uint8Array {
 
     if (['hex'].includes(encoding)) {
 
-      let ret = ''
-    
-      for (let i = 0; i < this.binary.length; ++i) {
+      let out = ''
 
-        ret += this.binary[i].toString(16)
+      for (let i = 0; i < this.binary.byteLength; ++i) {
+
+        out += hexSliceLookupTable[this.binary[i]]
 
       }
 
-      return ret
+      return out
 
     }
 
@@ -177,7 +189,7 @@ class Bitray extends Uint8Array {
 
     if (encoding === 'base64') {
 
-      return fromByteArray(this.binary)
+      return Base64.fromByteArray(this.binary)
 
     }
 
@@ -185,129 +197,48 @@ class Bitray extends Uint8Array {
 
 }
 
-let lookup = []
-let revLookup = []
-let code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-for (let i = 0, len = code.length; i < len; ++i) {
-  lookup[i] = code.charAt(i)
-  revLookup[code.charCodeAt(i)] = i
-}
-revLookup['-'.charCodeAt(0)] = 62
-revLookup['_'.charCodeAt(0)] = 63
+Bitray.from = (data, encoding) => {
 
-function getLens (b64) {
-  let len = b64.length
+  let binary
 
-  if (len % 4 > 0) {
-    throw new Error('Invalid string. Length must be a multiple of 4')
+  if (typeof encoding !== 'string' || encoding === '') {
+
+    encoding = 'utf8'
+
   }
-  let validLen = b64.indexOf('=')
-  if (validLen === -1) validLen = len
-  let placeHoldersLen = validLen === len
-    ? 0
-    : 4 - (validLen % 4)
 
-  const uin8 = new Uint8Array(2)
-  uin8[0] = validLen
-  uin8[1] = placeHoldersLen
+  if (encoding === 'utf8' || encoding === 'utf-8') {
+      
+    binary = utf8Decode(data)
 
-  return uin8
-}
+  } else if (['latin1', 'binary'].includes(encoding)) {
+      
+    binary = latinDecode(data)
 
-function toByteArray (b64) {
-  let tmp
-  let lens = getLens(b64)
-  let validLen = lens[0]
-  let placeHoldersLen = lens[1]
-  let arr = new Uint8Array(((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen)
-  let curByte = 0
-  let len = placeHoldersLen > 0
-    ? validLen - 4
-    : validLen
-  let i
-  for (i = 0; i < len; i += 4) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 18) |
-      (revLookup[b64.charCodeAt(i + 1)] << 12) |
-      (revLookup[b64.charCodeAt(i + 2)] << 6) |
-      revLookup[b64.charCodeAt(i + 3)]
-    arr[curByte++] = (tmp >> 16) & 0xFF
-    arr[curByte++] = (tmp >> 8) & 0xFF
-    arr[curByte++] = tmp & 0xFF
-  }
-  if (placeHoldersLen === 2) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 2) |
-      (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[curByte++] = tmp & 0xFF
-  }
-  if (placeHoldersLen === 1) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 10) |
-      (revLookup[b64.charCodeAt(i + 1)] << 4) |
-      (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[curByte++] = (tmp >> 8) & 0xFF
-    arr[curByte++] = tmp & 0xFF
-  }
-  return arr
-}
+  } else if (encoding === 'hex') {
+      
+    binary = hexDecode(data)
 
-function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] +
-    lookup[num >> 12 & 0x3F] +
-    lookup[num >> 6 & 0x3F] +
-    lookup[num & 0x3F]
-}
+  } else if (['ucs2', 'ucs-2', 'utf16le', 'utf-16le'].includes(encoding)) {
 
-function encodeChunk (uint8, start, end) {
-  let tmp
-  let output = []
-  for (let i = start; i < end; i += 3) {
-    tmp =
-      ((uint8[i] << 16) & 0xFF0000) +
-      ((uint8[i + 1] << 8) & 0xFF00) +
-      (uint8[i + 2] & 0xFF)
-    output.push(tripletToBase64(tmp))
-  }
-  return output.join('')
-}
+    binary = utf16Decode(data)
 
-function fromByteArray (uint8) {
-  let tmp
-  let len = uint8.length
-  let extraBytes = len % 3
-  let parts = []
-  let maxChunkLength = 16383
-  for (let i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+  } else if (encoding === 'base64') {
+
+    binary = Base64.toByteArray(data)
+
+  } else {
+
+    throw new Error('Unknown Encoding Provided. Recieved Encoding "' + encoding + '"')
+
   }
-  if (extraBytes === 1) {
-    tmp = uint8[len - 1]
-    parts.push(
-      lookup[tmp >> 2] +
-      lookup[(tmp << 4) & 0x3F] +
-      '=='
-    )
-  } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
-    parts.push(
-      lookup[tmp >> 10] +
-      lookup[(tmp >> 4) & 0x3F] +
-      lookup[(tmp << 2) & 0x3F] +
-      '='
-    )
-  }
-  return parts.join('')
+
 }
 
 function hexDecode (str) {
   const byteArray = new Uint8Array(str.length >>> 1)
-  const strArray = str.split('')
-  let pos = 0
   for (let i = 0; i < str.length / 2; ++i) {
-      let hex = '' + strArray[pos] + '' + strArray[pos + 1] + ''
-      byteArray[i] = parseInt('0x' + hex + '', 16)
-      pos = pos + 2
+      byteArray[i] = parseInt('0x' + str.substr(i * 2, 2) + '', 16)
   }
   return byteArray
 }
