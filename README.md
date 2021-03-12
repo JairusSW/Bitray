@@ -37,6 +37,7 @@ Binray Supports The Following Encodings:
 - **Utf-8**
 - **Base64**
 - **Hex**
+- **Base58**
 - **Binary/Latin1**
 - **Ucs2**
 - **Utf16**

@@ -248,6 +248,10 @@ Bitray.from = (data, encoding) => {
   } else if (encoding === 'base64') {
 
     Base64.toByteArray(data)
+ 
+  } else if (encoding === 'base58') {
+
+    Base58.decodeUnsafe(data)
 
   } else {
 
