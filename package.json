@@ -16,8 +16,6 @@
     "url": "https://github.com/JairusSW/Bitray"
   },
   "dependencies": {
-    "base64-js": "^1.5.1",
-    "benny": "^3.6.15",
-    "buffer": "^6.0.3"
+    "base64-js": "^1.5.1"
   }
 }
