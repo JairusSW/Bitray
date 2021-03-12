@@ -53,7 +53,7 @@ Convert Bitray Into A String Encoding.
 ## Performance
 
 **Encode Performance**
-![Encode](https://cdn.discordapp.com/attachments/809588495425208320/819996033743978567/GNo7sAhYBCwCFgGLgEXAImARsAg0DQI2AGmaobIXahGwCFgELAIWAYuARcAiYBFofgTP5hxUvRJGiGAAAAAElFTkSuQmCC.png)
+![Encode](https://cdn.discordapp.com/attachments/809146942302978078/820053976527142912/s2buJpDNfAAAAAElFTkSuQmCC.png)
 
 **Decode Performance**
-![Decode](https://cdn.discordapp.com/attachments/809588495425208320/819996178740543528/e3F5sinmNgAAAAASUVORK5CYII.png)
+![Decode](https://cdn.discordapp.com/attachments/809146942302978078/820053937981751326/sYzJNHOhqkUAAAAASUVORK5CYII.png)
