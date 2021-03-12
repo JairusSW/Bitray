@@ -1,10 +1,22 @@
-const hexSliceLookupTable = (() => {
+const hexLookupTable = (() => {
   const alphabet = '0123456789abcdef'
   const table = new Array(256)
   for (let i = 0; i < 16; ++i) {
     const i16 = i * 16
     for (let j = 0; j < 16; ++j) {
       table[i16 + j] = alphabet[i] + alphabet[j]
+    }
+  }
+  return table
+})()
+
+const decLookupTable = (() => {
+  const alphabet = '0123456789abcdef'
+  const table = {}
+  for (let i = 0; i < 16; ++i) {
+    const i16 = i * 16
+    for (let j = 0; j < 16; ++j) {
+      table[alphabet[i] + alphabet[j]] = i16 + j
     }
   }
   return table
@@ -165,7 +177,7 @@ class Bitray extends Uint8Array {
 
       for (let i = 0; i < this.binary.byteLength; ++i) {
 
-        out += hexSliceLookupTable[this.binary[i]]
+        out += hexLookupTable[this.binary[i]]
 
       }
 
@@ -199,8 +211,6 @@ class Bitray extends Uint8Array {
 
 Bitray.from = (data, encoding) => {
 
-  let binary
-
   if (typeof encoding !== 'string' || encoding === '') {
 
     encoding = 'utf8'
@@ -209,23 +219,23 @@ Bitray.from = (data, encoding) => {
 
   if (encoding === 'utf8' || encoding === 'utf-8') {
       
-    binary = utf8Decode(data)
+    utf8Decode(data)
 
   } else if (['latin1', 'binary'].includes(encoding)) {
       
-    binary = latinDecode(data)
+    latinDecode(data)
 
   } else if (encoding === 'hex') {
       
-    binary = hexDecode(data)
+    hexDecode(data)
 
   } else if (['ucs2', 'ucs-2', 'utf16le', 'utf-16le'].includes(encoding)) {
 
-    binary = utf16Decode(data)
+    utf16Decode(data)
 
   } else if (encoding === 'base64') {
 
-    binary = Base64.toByteArray(data)
+    Base64.toByteArray(data)
 
   } else {
 
@@ -236,9 +246,13 @@ Bitray.from = (data, encoding) => {
 }
 
 function hexDecode (str) {
-  const byteArray = new Uint8Array(str.length >>> 1)
-  for (let i = 0; i < str.length / 2; ++i) {
-      byteArray[i] = parseInt('0x' + str.substr(i * 2, 2) + '', 16)
+
+  const len = str.length >>> 1
+
+  const byteArray = new Uint8Array(len)
+
+  for (let i = 0; i < len; ++i) {
+    byteArray[i] = decLookupTable[str.substr(i * 2, 2)]
   }
   return byteArray
 }

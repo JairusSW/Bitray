@@ -1,6 +1,6 @@
 {
   "name": "bitray",
-  "version": "2.0.9",
+  "version": "2.1.0",
   "description": "Bitray - Small Utility For Handling Binary Data",
   "main": "index.js",
   "keywords": [
@@ -16,6 +16,8 @@
     "url": "https://github.com/JairusSW/Bitray"
   },
   "dependencies": {
-    "base64-js": "^1.5.1"
+    "base64-js": "^1.5.1",
+    "benny": "^3.6.15",
+    "buffer": "^6.0.3"
   }
 }
