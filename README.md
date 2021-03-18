@@ -24,30 +24,44 @@ console.log(bit.toFormat('hex'))
 ```
 
 **Buffer Integration**
+
+Convert Bitray to Buffer
+
 ```js
 const Bitray = require('bitray')
 
 const bit = new Bitray('Hello World 🌎')
-// Convert To Buffer
+
 const buffer = Buffer.from(bit)
 //===> <Buffer 68 65 6c 6c ... >
 ```
+
+Convert Buffer to Bitray
+
+```js
+const Bitray = require('bitray')
+
+const buff = Buffer.from('Hello World 🌎')
+
+const bit = new Bitray(buff)
+//===> <Buffer 68 65 6c 6c ... >
+```
+
 ## Encodings
 Binray Supports The Following Encodings:
 - **Utf-8**
 - **Base64**
 - **Hex**
-- **Base58**
 - **Binary/Latin1**
 - **Ucs2**
 - **Utf16**
 
 ## API
 
-### new Bitray(string, format) -->> Uint8Array
+### new Bitray(data: String | ArrayLike, format) -->> Uint8Array
 Creates A New Bitray Instance. Built On Top Of Uint8Array.
 
-### .toFormat(encoding) -->> String
+### .toFormat(encoding: string) -->> String
 Convert Bitray Into A String Encoding.
 
 ## Performance
