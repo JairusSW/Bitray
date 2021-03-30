@@ -43,7 +43,7 @@ const Bitray = require('bitray')
 
 const buff = Buffer.from('Hello World 🌎')
 
-const bit = new Bitray(buff)
+const bit = Bitray.from(buff)
 //===> <Buffer 68 65 6c 6c ... >
 ```
 

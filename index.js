@@ -221,6 +221,16 @@ class Bitray extends Uint8Array {
 
 }
 
+Bitray.from = (array) => {
+
+  const bit = new Bitray('', '')
+
+  bit.binary = array
+  
+  return bit
+
+}
+
 function hexDecode (str) {
 
   const len = str.length >>> 1
